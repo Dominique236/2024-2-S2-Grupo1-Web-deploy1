@@ -10,6 +10,7 @@ import { UserContext } from '../contexts/UserContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
+import ProgramationPopUp from './ProgramationPopUp';
 
 const Ordenes = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -25,6 +26,9 @@ const Ordenes = () => {
     const { userRole } = useContext(UserContext);
     const location = useLocation();
     const filtroWorkOrderId = location.state?.filtroWorkOrderId;
+    const [showProgramationPopUp, setShowProgramationPopUp] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+
 
     // Filtros avanzados
     const [estadoPendiente, setEstadoPendiente] = useState(true); // true
@@ -36,7 +40,6 @@ const Ordenes = () => {
     const [tipoLavadora, setTipoLavadora] = useState(false);
     const [tipoSecadora, setTipoSecadora] = useState(false);
     const [filterbuilding, setFilterBuilding] = useState('');
-    // const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 6)));
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [endDate, setEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
 
@@ -253,20 +256,25 @@ const Ordenes = () => {
         setFiltro('');
         setFilteredRows(filas); // Restaurar las filas originales
 
+        // Aplicar el filtro automáticamente a las filas después de reiniciar los filtros
+        let newFilteredRows = filas; // Restablecer las filas a las originales
 
-        // Mantener el estado de orden actual y aplicarlo a las filas originales
-        let newCleanRows = aplicarOrden(filteredRows);
-        setFilteredRows(newCleanRows);
+        // Aplicar el orden actual si hay uno seleccionado
+        newFilteredRows = aplicarOrden(newFilteredRows);
+
+        // Actualizar el estado con las filas filtradas y ordenadas
+        setFilteredRows(newFilteredRows);
+
     };
       
     const handleFileChange = async (event) => {
         const file = event.target.files[0]; // Obtiene el archivo seleccionado
-        if (file && file.type === 'text/csv') {
+        if (file && file.name.endsWith('.csv')) { // Cambié a verificación de extensión de archivo
             console.log('Archivo subido:', file.name);
             
             Papa.parse(file, {
                 header: true, 
-                delimiter: ";", // Cambié el delimitador a punto y coma
+                delimiter: ",", // Cambié el delimitador a punto y coma
                 skipEmptyLines: true, 
                 complete: async (results) => {
                     const jsonData = results.data.map((row) => {
@@ -288,13 +296,25 @@ const Ordenes = () => {
                             },
                         });
                         console.log('Respuesta del servidor:', response.data);
+                        setPopupMessage('La subida del archivo fue exitosa.');
+                        setShowProgramationPopUp(true);
+
                     } catch (error) {
                         console.log('Error al enviar los datos al servidor:', error);
+                        setPopupMessage('Error en el contenido o formato del archivo, intente nuevamente.');
+                        setShowProgramationPopUp(true);
                     }
+
+                    // Resetea el valor del input de archivo
+                     event.target.value = ''; // Esta línea reinicia el input de archivo
                 }
             });
         } else {
-            alert('Debes subir un archivo de extensión .csv');
+            setPopupMessage('Debes subir un archivo de extensión .csv.');
+            setShowProgramationPopUp(true);
+            event.target.value = ''; // Esta línea reinicia el input de archivo
+
+
         }
     };
     
@@ -414,6 +434,15 @@ const Ordenes = () => {
                         onClose={() => setSelectedRow(null)}
                     />
                 )}
+
+                {showProgramationPopUp && (
+                    <ProgramationPopUp
+                        mensaje={popupMessage}
+                        onClose={() => setShowProgramationPopUp(false)}
+                    />
+                )}
+
+
                 <OTAdvancedFiltersPopup
                     show={showFilters}
                     onClose={handleCloseFilters}

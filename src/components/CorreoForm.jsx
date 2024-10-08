@@ -79,7 +79,6 @@ const CorreoForm = () => {
         }
     };
     
-
     // Generate email text from filtered OTs
     const generateEmailText = () => {
         if (filteredOTs.length === 0) return 'No se encontraron OTs.';

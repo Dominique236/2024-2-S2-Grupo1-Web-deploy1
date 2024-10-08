@@ -88,7 +88,6 @@ const Routing = () => {
                         <Route path="/repuestos" element={<Repuestos />} />
                         <Route path="/solicitudesherramientas" element={<SolicitudesHerramientas />} />
                         <Route path="/asignarherramientas/:idSolTool" element={<AsignarHerramientas />} />
-                        <Route path="/correo" element={<CorreoForm />} />
                     </>
                 )}
             </Routes>

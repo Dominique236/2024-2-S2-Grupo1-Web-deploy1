@@ -41,6 +41,7 @@ const Solicitudes = () => {
     const [recomendacionAprobar, setRecomendacionAprobar] = useState(false);
     const [recomendacionRechazar, setRecomendacionRechazar] = useState(false);
 
+
     const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 6)));
     const [endDate, setEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
 

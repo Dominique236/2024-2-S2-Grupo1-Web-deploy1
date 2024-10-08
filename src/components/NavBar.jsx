@@ -27,7 +27,7 @@ const NavBar = () => {
     }
 
     const confirmLogout = () => {
-        logout({ returnTo: window.location.origin });
+        logout({ returnTo: 'https://speed-clean-ciclo1.netlify.app/'});
     }
 
     const items = [

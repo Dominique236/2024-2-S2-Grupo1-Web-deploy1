@@ -407,8 +407,8 @@ const Popup = ({ fila, datosAdicionales, onClose }) => {
                                                         <tbody>
                                                             <tr className='align-top'>
                                                                 <td><p><strong>Tiempo estimado:</strong></p></td>
-                                                                <td><p>{ordenData?.total_man_hours ? ordenData?.total_man_hours : "--"} horas</p></td>
-                                                            </tr>
+                                                                <td><p>{ordenData?.total_man_hours ? ordenData?.total_man_hours.toFixed(1) : "--"} horas</p></td>
+                                                                </tr>
                                                             <tr className='align-top'>
                                                                 <td><p><strong>Subtareas:</strong></p></td>
                                                                 <td>
